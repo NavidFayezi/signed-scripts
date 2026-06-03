@@ -1,12 +1,14 @@
 #include "hash.h"
 
 
-int hash_sha3_512(unsigned char * data, int data_length, unsigned char * digest) {
+int hash_sha3_512(unsigned char * data, 
+                  int data_length, 
+                  unsigned char * digest) {
+
     EVP_MD *md_alg = NULL;
     EVP_MD_CTX *md_ctx = NULL;
 
-
-    md_alg = EVP_MD_fetch(NULL, "SHAd3-512", NULL);
+    md_alg = EVP_MD_fetch(NULL, "SHA3-512", NULL);
     if (md_alg == NULL) {
         printf("Failed to fetch digest implementation\n");
         goto err;
