@@ -1,0 +1,13 @@
+#ifndef COMMON_H
+#define COMMON_H
+
+#include <openssl/evp.h>
+#include <stdio.h>
+#include <openssl/err.h>
+#include <openssl/rand.h>
+#include <string.h>
+#include <openssl/types.h>
+#include <openssl/core.h>
+#include <openssl/core_names.h>
+
+#endif // COMMON_H
