@@ -3,11 +3,13 @@
 
 
 int main(int argc, char *argv[]){
-    int socket_fd, client_socket_fd;
+    int socket_fd = -1;
+    int client_socket_fd = -1;
     struct sockaddr_in server_address, client_address;
     socklen_t client_address_len = sizeof(client_address);
     uint16_t received_data_len;
-    char *received_data;
+    char *received_data = NULL;
+    int opt = 1;
 
     memset(&server_address, 0, sizeof(server_address));
     server_address.sin_family = AF_INET;
@@ -18,6 +20,11 @@ int main(int argc, char *argv[]){
 
     socket_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_fd < 0) {
+        goto error;
+    }
+
+    // deals with the "Address already in use" error 
+    if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
         goto error;
     }
 
@@ -64,5 +71,8 @@ int main(int argc, char *argv[]){
 
 error:
     printf("Error: %s\n", strerror(errno));
+    free(received_data);
+    close(client_socket_fd);
+    close(socket_fd);
     return EXIT_FAILURE;
 }

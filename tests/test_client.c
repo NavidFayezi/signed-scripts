@@ -2,9 +2,9 @@
 #include "common.h"
 
 int main(int argc, char *argv[]) {
-    int socket_fd;
+    int socket_fd = -1;
     struct sockaddr_in server_address;
-    char *response;
+    char *response = NULL;
     char *message = "Hello, Server!";
     uint16_t data_len_16;
 
@@ -58,5 +58,7 @@ int main(int argc, char *argv[]) {
 
 error:
     printf("Test Failed \nError: %s\n", strerror(errno));
+    free(response);
+    close(socket_fd);
     return EXIT_FAILURE;
 }
