@@ -4,9 +4,8 @@
 #include <stdint.h>
 
 
-int create_v4TCP_socket();
-int send_over_v4TCP(int socket_fd, const void *data, size_t data_len);
-char *recv_over_v4TCP(int socket_fd);
+int send_over_v4TCP(int socket_fd, void *data, size_t data_len);
+char *recv_over_v4TCP(int socket_fd, uint16_t *data_len_16);
 int recv_loop(int socket_fd, 
               void *buffer, 
               size_t buffer_size,

@@ -9,5 +9,6 @@
 #include <openssl/types.h>
 #include <openssl/core.h>
 #include <openssl/core_names.h>
+#include <err.h>
 
 #endif // COMMON_H

@@ -1,15 +1,5 @@
 #include "sockets.h"
 
-int create_v4TCP_socket() {
-    int socket_fd;
-    socket_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (socket_fd < 0) {
-        printf("Error creating socket\n");
-        return -1;
-    }
-
-    return socket_fd;
-}
 
 int send_over_v4TCP(int socket_fd, void *data, size_t data_len) {
 
@@ -42,24 +32,23 @@ int send_over_v4TCP(int socket_fd, void *data, size_t data_len) {
     return 0;
 }
 
-char *recv_over_v4TCP(int socket_fd){
-    uint16_t data_len_16;
+char *recv_over_v4TCP(int socket_fd, uint16_t *data_len_16) {
     ssize_t bytes_received = 0;
     ssize_t total_bytes_received = 0;
     char *data_buffer = NULL;
 
     // First, receive the length of the incoming data (represented in 2 bytes)
     if (recv_loop(socket_fd, 
-                  (char *) &data_len_16, 
-                  sizeof(data_len_16), 
+                  (char *) data_len_16, 
+                  sizeof(*data_len_16), 
                   &bytes_received, 
                   &total_bytes_received) < 0) {
         printf("Error receiving data length\n");
         return NULL;
     }
 
-    data_len_16 = ntohs(data_len_16);
-    data_buffer = (char *) malloc(data_len_16);
+    *data_len_16 = ntohs(*data_len_16);
+    data_buffer = (char *) malloc(*data_len_16);
     if (data_buffer == NULL) {
         printf("Memory allocation failed\n");
         return NULL;
@@ -71,7 +60,7 @@ char *recv_over_v4TCP(int socket_fd){
     if (
         recv_loop(socket_fd, 
                   data_buffer, 
-                  data_len_16, 
+                  *data_len_16, 
                   &bytes_received, 
                   &total_bytes_received) < 0
                 ) {
@@ -127,3 +116,4 @@ int recv_loop(int socket_fd,
 
     return 0;
 }
+
