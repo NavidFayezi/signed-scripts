@@ -4,7 +4,8 @@
 int hash_sha3_512(unsigned char * data, 
                   int data_length, 
                   unsigned char * digest) {
-
+    // digest should be pointer to a buffer of at least 64 bytes (512 bits)
+    
     EVP_MD *md_alg = NULL;
     EVP_MD_CTX *md_ctx = NULL;
 
