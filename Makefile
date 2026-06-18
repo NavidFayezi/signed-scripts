@@ -15,5 +15,13 @@ test: binaries/test_server binaries/test_client
 	sleep 1
 	./binaries/test_client
 
+keys:
+	openssl genpkey -algorithm RSA -out keys/private_key.pem -pkeyopt rsa_keygen_bits:4096
+	openssl rsa -pubout -in keys/private_key.pem -out keys/public_key.pem
+
 clean:
 	rm -f binaries/*
+	rm -f keys/*
+
+
+.PHONY: keys clean
