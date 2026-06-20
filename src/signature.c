@@ -3,14 +3,14 @@
 #include "common.h"
 
 
-EVP_PKEY* load_private_key_from_file(const char* filename) {
+EVP_PKEY* load_key_from_file(const char* filename) {
     BIO* bio;
     OSSL_DECODER_CTX* decoder_ctx;
     EVP_PKEY* pkey = NULL;
 
     bio = BIO_new_file(filename, "rb");
     if (bio == NULL) {
-        fprintf(stderr, "Error opening private key file: %s\n", filename);
+        fprintf(stderr, "Error opening key file: %s\n", filename);
         return NULL;
     }
     decoder_ctx = OSSL_DECODER_CTX_new_for_pkey(&pkey, NULL, NULL, NULL, 0, NULL, NULL);
@@ -20,7 +20,7 @@ EVP_PKEY* load_private_key_from_file(const char* filename) {
         return NULL;
     }
     if (OSSL_DECODER_from_bio(decoder_ctx, bio) != 1) {
-        fprintf(stderr, "Error decoding private key from file\n");
+        fprintf(stderr, "Error decoding key from file\n");
         OSSL_DECODER_CTX_free(decoder_ctx);
         EVP_PKEY_free(pkey);
         pkey = NULL;
@@ -88,5 +88,49 @@ error:
     ERR_print_errors_fp(stderr);
     EVP_MD_CTX_free(mdctx);
     OPENSSL_free(*signature);
+    return 0;
+}
+
+int verify_signature_RSA_PSS_sha3_512(const char * message,
+                                      size_t message_len,
+                                      unsigned char * signature, 
+                                      size_t signature_len,
+                                      EVP_PKEY * public_key) {
+    EVP_MD_CTX* mdctx = NULL;
+    OSSL_PARAM params [2];
+
+    mdctx = EVP_MD_CTX_new();
+    if (mdctx == NULL) {
+        fprintf(stderr, "Error creating context\n");
+        goto error;
+    }
+    params[0] = OSSL_PARAM_construct_utf8_string(OSSL_SIGNATURE_PARAM_PAD_MODE,
+        OSSL_PKEY_RSA_PAD_MODE_PSS, 0);
+    params[1] = OSSL_PARAM_construct_end();
+    
+    if (EVP_DigestVerifyInit_ex(mdctx, NULL, "SHA3-512", 
+                                NULL, NULL, public_key, 
+                                params) 
+                                != 1) {
+        fprintf(stderr, "Error initializing the signing context\n");
+        goto error;
+    }
+
+    if (EVP_DigestVerifyUpdate(mdctx, message, message_len) != 1) {
+        fprintf(stderr, "Error hashing message into signing context\n");
+        goto error;
+    }
+
+    if (EVP_DigestVerifyFinal(mdctx, signature, signature_len) != 1) {
+        fprintf(stderr, "Failed to verify the message, signature may be invalid\n");
+        goto error;
+    }
+
+    EVP_MD_CTX_free(mdctx);
+    return 1;
+
+error:
+    ERR_print_errors_fp(stderr);
+    EVP_MD_CTX_free(mdctx);
     return 0;
 }
