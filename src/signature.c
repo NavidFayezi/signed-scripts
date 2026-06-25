@@ -1,5 +1,4 @@
 #include "signature.h"
-#include "hash.h"
 #include "common.h"
 
 
