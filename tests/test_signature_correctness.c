@@ -66,11 +66,11 @@ end:
     EVP_PKEY_free(public_key);
     OPENSSL_free(signature);
     if (rc == 1){
-        fprintf(stdout, "Test Passed\n");
+        fprintf(stdout, "=====Test Passed=====\n");
         return EXIT_SUCCESS;
     }
     else{
-        fprintf(stdout, "Test Failed\n");
+        fprintf(stdout, "=====Test Failed=====\n");
         return EXIT_FAILURE;
     }
 }
