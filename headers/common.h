@@ -10,7 +10,10 @@
 #include <openssl/core.h>
 #include <openssl/core_names.h>
 #include <err.h>
+#include <fcntl.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/stat.h>
 #include <openssl/decoder.h>
 #include <openssl/bio.h>
 
