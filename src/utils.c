@@ -73,7 +73,6 @@ int read_file(const char * filename, char **file_data){
         bytes_read = read(fd, *file_data + total_bytes_read, 4096);
         if (bytes_read <= 0 && total_bytes_read < file_size){
             fprintf(stderr, "Error reading from the file\n");
-            free(*file_data);
             close(fd);
             return -1;
         }

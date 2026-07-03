@@ -11,7 +11,7 @@ binaries/test_client: headers/sockets.h src/sockets.c tests/test_client.c
 	gcc src/sockets.c tests/test_client.c -I headers -o binaries/test_client
 
 binaries/test_signature_correctness: headers/signature.h src/signature.c tests/test_signature_correctness.c
-	gcc src/signature.c tests/test_signature_correctness.c -lcrypto  -I headers -o binaries/test_signature_correctness
+	gcc src/signature.c src/utils.c tests/test_signature_correctness.c -lcrypto  -I headers -o binaries/test_signature_correctness
 
 test: binaries/test_server binaries/test_client binaries/test_signature_correctness
 	./binaries/test_server &
