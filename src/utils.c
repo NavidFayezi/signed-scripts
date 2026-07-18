@@ -3,7 +3,7 @@
 
 
 static const int MAX_FILE_SIZE = 20000;    // Not sending a file 
-                                           // larger than this
+                                           // larger than 20000 bytes
 
 int binary_to_base64(unsigned char *input, int input_len, unsigned char *output) {
     EVP_ENCODE_CTX *ctx;
