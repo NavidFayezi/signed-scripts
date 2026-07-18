@@ -43,10 +43,10 @@ int main(int argc, char *argv[]) {
         strlen(message) != (size_t) data_len_16 
         || strncmp(response, message, strlen(message)) != 0
     ) {
-        printf("=====Test Failed=====\n");
+        printf("=====Test Failed: Socket test =====\n");
     }
     else {
-        printf("=====Test Passed=====\n");
+        printf("=====Test Passed: Socket test =====\n");
     }
 
     free(response);
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 
 error:
-    printf("=====Test Failed===== \nError: %s\n", strerror(errno));
+    printf("=====Test Failed: Socket test ===== \nError: %s\n", strerror(errno));
     free(response);
     close(socket_fd);
     return EXIT_FAILURE;

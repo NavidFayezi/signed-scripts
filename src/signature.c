@@ -97,6 +97,7 @@ int verify_signature_RSA_PSS_sha3_512(const char * message,
                                       EVP_PKEY * public_key) {
     EVP_MD_CTX* mdctx = NULL;
     OSSL_PARAM params [2];
+    int verification_res = 0;
 
     mdctx = EVP_MD_CTX_new();
     if (mdctx == NULL) {
@@ -119,14 +120,21 @@ int verify_signature_RSA_PSS_sha3_512(const char * message,
         fprintf(stderr, "Error hashing message into signing context\n");
         goto error;
     }
-
-    if (EVP_DigestVerifyFinal(mdctx, signature, signature_len) != 1) {
-        fprintf(stderr, "Failed to verify the message, signature may be invalid\n");
-        goto error;
+    verification_res = EVP_DigestVerifyFinal(mdctx, signature, signature_len);
+    if (verification_res != 1) {
+        if (verification_res == 0) {
+            //fprintf(stdout, "Bad signature, verification failed\n");
+            goto end;
+        }
+        else {
+            fprintf(stderr, "Failed to verify the message, signature may be invalid\n");
+            goto error;
+        }
     }
 
+end:
     EVP_MD_CTX_free(mdctx);
-    return 1;
+    return verification_res;
 
 error:
     ERR_print_errors_fp(stderr);
